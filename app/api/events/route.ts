@@ -4,6 +4,9 @@ import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/authOptions';
 
+console.log("DATABASE_URL (Vercel check):", process.env.DATABASE_URL);
+console.log("SECRET (Vercel check):", process.env.NEXTAUTH_SECRET);
+
 export async function POST(req: NextRequest) {
   try {
     // Get session using next-auth method, pass authOptions (your next-auth config)
