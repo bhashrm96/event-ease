@@ -2,10 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import type { Event } from '@/types';
 
 type AdditionalField = { label: string; value: string };
 
-export default function EventForm({ event }: { event?: any }) {
+export default function EventForm({ event }: { event?: Event }) {
   const router = useRouter();
 
   const [form, setForm] = useState({

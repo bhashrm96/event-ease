@@ -20,9 +20,13 @@ export default function EditUserPage() {
         if (!res.ok) throw new Error('Failed to fetch user');
         const data = await res.json();
         setUser(data.user);
-      } catch (e: any) {
-        setError(e.message || 'Unknown error');
-      } finally {
+      } catch (err: unknown) {
+  if (err instanceof Error) {
+    setError(err.message);
+  } else {
+    setError('An unexpected error occurred');
+  }
+} finally {
         setLoading(false);
       }
     }

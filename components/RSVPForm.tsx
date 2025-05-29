@@ -34,9 +34,13 @@ export default function RSVPForm({ eventId }: RSVPFormProps) {
       setSuccess(true);
       setName('');
       setEmail('');
-    } catch (err: any) {
-      setError(err.message || 'Failed to submit RSVP');
-    } finally {
+    } catch (err: unknown) {
+  if (err instanceof Error) {
+    setError(err.message);
+  } else {
+    setError('An unexpected error occurred');
+  }
+} finally {
       setLoading(false);
     }
   }

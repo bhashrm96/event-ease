@@ -7,7 +7,7 @@ import { Role } from "@prisma/client";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { email, password, name, role } = body;
+  const { email, password, role } = body;
 
   if (!email || !password || !role) {
     return NextResponse.json(
@@ -41,13 +41,12 @@ export async function POST(req: Request) {
     data: {
       email,
       password: hashedPassword,
-      name,
-      role,
+      role
     },
   });
 
   return NextResponse.json({
     message: "User created successfully",
-    user: { id: user.id, email: user.email, name: user.name, role: user.role },
+    user: { id: user.id, email: user.email, role: user.role },
   });
 }

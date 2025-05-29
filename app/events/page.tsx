@@ -1,16 +1,16 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import EventCard from '@/components/EventCart';
+import { useRouter } from 'next/navigation';
+import EventCard from '@/components/EventCard';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
+import type { Event } from '@/types';
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const hasShownToast = useRef(false);
-  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const userRole = session?.user?.role ?? null;
 
@@ -42,7 +42,7 @@ export default function EventsPage() {
     });
 
     if (res.ok) {
-      setEvents((prev) => prev.filter((e: any) => e.id !== id));
+      setEvents((prev) => prev.filter((e: Event) => e.id !== id));
     } else {
       const data = await res.json();
       alert(data.error || 'Failed to delete event');
@@ -78,7 +78,7 @@ export default function EventsPage() {
       <p className="text-center text-gray-600 dark:text-gray-300">{loading ? "Loading..." : "No events found."}</p>
     ) : (
       <ul className="space-y-4">
-        {events.map((event: any) => (
+        {events.map((event: Event) => (
           <EventCard
             key={event.id}
             event={event}

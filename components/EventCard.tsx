@@ -1,18 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import type { Event } from '@/types';
 
-type Event = {
-  id: string;
-  title: string;
-  description?: string;
-};
-
-type EventCardProps = {
+interface EventCardProps {
   event: Event;
   onDelete: (id: string) => void;
-  userRole?: string | null; // 'ADMIN', 'EVENT_OWNER', 'STAFF', null (guest)
-};
+  userRole: string | null;
+}
 
 export default function EventCard({ event, onDelete, userRole }: EventCardProps) {
   const router = useRouter();

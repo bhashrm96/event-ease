@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '../../auth/authOptions';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import type { UpdateUserData } from '@/types';
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the current session
@@ -23,6 +24,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+     const params = await context.params;
     const { id } = params;
 
     // Parse JSON body (update payload)
@@ -34,7 +36,7 @@ export async function PUT(
     }
 
     // Prepare the update data object. Include name if provided.
-    const updatedData: { [key: string]: any } = {
+    const updatedData: UpdateUserData = {
       email,
       role
     };
@@ -60,7 +62,7 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -77,6 +79,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+     const params = await context.params;
     const { id } = params;
 
     // Don't allow deleting another ADMIN
@@ -102,9 +105,10 @@ export async function DELETE(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+     const params = await context.params;
     const { id } = params;
 
     const session = await getServerSession(authOptions);

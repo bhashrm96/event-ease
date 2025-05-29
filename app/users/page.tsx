@@ -3,16 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-
-type User = {
-  id: string;
-  name: string | null;
-  email: string;
-  role: string;
-};
+import type { UserData } from '@/types';
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
@@ -36,9 +30,13 @@ export default function UsersPage() {
       if (!res.ok) throw new Error('Failed to fetch users');
       const data = await res.json();
       setUsers(data.users);
-    } catch (e: any) {
-      setError(e.message || 'Unknown error');
-    } finally {
+    } catch (err: unknown) {
+  if (err instanceof Error) {
+    setError(err.message);
+  } else {
+    setError('An unexpected error occurred');
+  }
+} finally {
       setLoading(false);
     }
   }
@@ -61,6 +59,7 @@ export default function UsersPage() {
       setUsers((prev) => prev.filter((user) => user.id !== id));
     } catch (error) {
       alert('Failed to delete user');
+      console.error("Error: ", error)
     } finally {
       setDeletingUserId(null);
     }

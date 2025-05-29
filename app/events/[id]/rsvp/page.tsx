@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Papa from 'papaparse';
 
 type RSVP = {
@@ -13,7 +13,6 @@ type RSVP = {
 
 export default function RSVPListPage() {
   const rawParams = useParams();
-  const router = useRouter();
   const id =
     typeof rawParams.id === 'string'
       ? rawParams.id
@@ -52,7 +51,7 @@ export default function RSVPListPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  });
 
   const handleDelete = async (rsvpId: string) => {
     const confirmed = confirm('Are you sure you want to delete this RSVP?');
@@ -76,8 +75,9 @@ export default function RSVPListPage() {
       alert('No RSVPs to export!');
       return;
     }
-    // Prepare data for CSV export (exclude `id` maybe or keep it, your choice)
-    const dataForCSV = rsvps.map(({ id, ...rest }) => rest);
+    
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const dataForCSV = rsvps.map(({ id: _id, ...rest }) => rest);
 
     const csv = Papa.unparse(dataForCSV);
 

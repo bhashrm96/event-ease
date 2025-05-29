@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import EventCard from '@/components/EventCart';
+import EventCard from '@/components/EventCard';
 import { toast } from 'sonner';
+import type { Event } from '@/types';
 
 export default function MyEventsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const userRole = session?.user?.role ?? null;
     const hasShownToast = useRef(false);
@@ -39,6 +40,7 @@ export default function MyEventsPage() {
         setEvents(data.events || []);
       } catch (error) {
         alert('Failed to fetch your events.');
+        console.error("Error: ", error)
       } finally {
         setLoading(false);
       }
@@ -61,13 +63,6 @@ export default function MyEventsPage() {
       const data = await res.json();
       alert(data.error || 'Failed to delete event');
     }
-  };
-
-  const handleCopyLink = (event: any) => {
-    const url = `${window.location.origin}/events/${event.id}`;
-    navigator.clipboard.writeText(url)
-      .then(() => alert('Event link copied to clipboard!'))
-      .catch(() => alert('Failed to copy link'));
   };
 
   if (loading) return <p>Loading your events...</p>;

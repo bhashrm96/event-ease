@@ -1,13 +1,19 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import type { Event } from '@/types';
+
+type AdditionalField = {
+  label: string;
+  value: string;
+};
 
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
 
-  const [event, setEvent] = useState<any>(null);
+  const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,6 +26,7 @@ export default function EventDetailPage() {
       } catch (error) {
         alert('Could not load event');
         router.push('/events');
+        console.error("Error: ", error)
       } finally {
         setLoading(false);
       }
@@ -61,7 +68,7 @@ export default function EventDetailPage() {
         <div>
           <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Additional Details:</p>
           <div className="space-y-2">
-            {event.additionalFields.map((field: any, i: number) => (
+            {event.additionalFields.map((field: AdditionalField, i: number) => (
               <p key={i}>
                 <span className="font-semibold">{field.label}:</span> {field.value}
               </p>

@@ -2,15 +2,15 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import type { UserData } from '@/types';
 
-type User = {
-  id: string;
-  name: string | null;
+type Payload = {
   email: string;
   role: 'EVENT_OWNER' | 'STAFF';
+  password?: string;
 };
 
-export default function UserForm({ user }: { user?: User }) {
+export default function UserForm({ user }: { user?: UserData }) {
   const router = useRouter();
 
   const [email, setEmail] = useState(user?.email || '');
@@ -71,10 +71,10 @@ export default function UserForm({ user }: { user?: User }) {
     setApiError('');
 
     try {
-      const payload: Record<string, any> = { email, role };
-      if (!user) {
-        payload.password = password;
-      }
+const payload: Payload = { email, role };
+if (!user) {
+  payload.password = password;
+}
 
       const res = await fetch(user ? `/api/users/${user.id}` : '/api/users', {
         method: user ? 'PUT' : 'POST',
@@ -88,8 +88,12 @@ export default function UserForm({ user }: { user?: User }) {
       }
       localStorage.setItem('successMessage', `User ${user ? "edited" : "created"} successfully!`);
       router.push('/users');
-    } catch (err: any) {
-      setApiError(err.message);
+    } catch (err: unknown) {
+  if (err instanceof Error) {
+    setApiError(err.message);
+  } else {
+    setApiError('An unexpected error occurred');
+  }
     } finally {
       setSaving(false);
     }
